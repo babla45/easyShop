@@ -5,13 +5,14 @@
 <div class="container mx-auto p-4">
 
     <!-- Add Product Button -->
-    <div class="mb-4">
+    <div class="mb-5">
+        <a href="/" class="bg-green-500 text-white px-4 py-2 rounded">Home Page</a>
         <a href="/products/create" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700">
             Add Product
         </a>
     </div>
 
-    
+
     {{-- -------------- --}}
     <!-- Search Form with Dropdown -->
     <form action="/search" method="GET" class="mb-4 flex items-center gap-2">
@@ -40,9 +41,9 @@
                 {{-- --------------- --}}
                 <!-- Image Display -->
                 @if($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image" height="300" width="400">
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image" class="w-90 h-32 object-cover mb-2">
                 @else
-                    <div class="w-32 h-32 bg-gray-200 mb-2 flex items-center justify-center text-gray-500">
+                    <div class="w-full h-32 bg-gray-200 mb-2 flex items-center justify-center text-gray-500">
                         No Image
                     </div>
                 @endif      
