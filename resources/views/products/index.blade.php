@@ -28,7 +28,7 @@
     {{-- --------------------- --}}
 
 <!-- Products Display with Flex Wrap Enabled -->
-<div class="flex flex-wrap mt-4 justify-center align-center gap-4">
+<div class="flex flex-wrap mt-4 justify-left align-center gap-4">
     @foreach($products as $product)
         <div class="border border-blue-300 shadow-lg p-4 rounded-lg flex-wrap flex-shrink-0">
             <!-- Image Display -->
@@ -48,6 +48,9 @@
             <!-- Edit and Delete Buttons -->
             <div class="flex justify-between mt-2">
                 <a href="/products/{{ $product->product_id }}/edit" class="text-blue-500">Edit</a>
+                <a href="signup" class="text-blue-500">Buy</a>
+                {{-- <button  class="text-blue-500">Buy</button> --}}
+
                 <form action="/products/{{ $product->product_id }}" method="POST">
                     @csrf
                     @method('DELETE')
