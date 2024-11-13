@@ -48,7 +48,7 @@
             <!-- Edit and Delete Buttons -->
             <div class="flex justify-between mt-2">
                 <a href="/products/{{ $product->product_id }}/edit" class="text-blue-500">Edit</a>
-                <a href="signup" class="text-blue-500">Buy</a>
+                <a href="login" class="text-blue-500">Buy</a>
                 {{-- <button  class="text-blue-500">Buy</button> --}}
 
                 <form action="/products/{{ $product->product_id }}" method="POST">
