@@ -12,16 +12,10 @@ Route::post('/register', [RegistrationController::class, 'register'])->name('reg
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login'])->name('login.submit');
 
-// Product Routes
-Route::get('/', [ProductController::class, 'index'])->name('index');
 
-// Protected Routes: Only accessible by authenticated users
-Route::middleware('auth')->group(function () {
-    Route::get('/products/create', [ProductController::class, 'create']);
-    Route::post('/products', [ProductController::class, 'store']);
-    Route::get('/products/{id}/edit', [ProductController::class, 'edit']);
-    Route::put('/products/{id}', [ProductController::class, 'update']);
-    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
-    Route::get('/search', [ProductController::class, 'search']);
-    Route::get('/order/product/{id}', [ProductController::class, 'orderProduct'])->name('order.product');
+// twilio sms
+use App\Http\Controllers\SMSController;
+Route::get('/sms', function () {
+    return view('sms'); // Display the form
 });
+Route::post('/sms/send', [SMSController::class, 'sendSMS'])->name('sms.send');
