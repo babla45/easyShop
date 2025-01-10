@@ -4,59 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f2f2f2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        .container {
-            max-width: 500px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            border: 2px solid #007bff;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #007bff;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-control {
-            border-radius: 5px;
-            border: 1px solid #007bff;
-        }
-        .btn-primary {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #007bff;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .alert-danger {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ff4d4d;
-            border-radius: 5px;
-            background-color: #ffe6e6;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h2>User Registration</h2>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+        <h2 class="text-3xl font-bold mb-8 text-gray-800 text-center">User Registration</h2>
         @if ($errors->any())
-            <div class="alert alert-danger">
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -66,31 +20,31 @@
         @endif
         <form action="{{ route('register.user') }}" method="POST">
             @csrf
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+            <div class="mb-4">
+                <label for="name" class="block text-gray-600 mb-2">Name</label>
+                <input type="text" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" id="name" name="name" placeholder="Enter your name" required>
             </div>
-            <div class="form-group">
-                <label for="phone">Phone:</label>
-                <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+            <div class="mb-4">
+                <label for="phone" class="block text-gray-600 mb-2">Phone</label>
+                <input type="text" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" id="phone" name="phone" placeholder="Enter your phone number" required>
             </div>
-            <div class="form-group">
-                <label for="location">Location:</label>
-                <input type="text" class="form-control" id="location" name="location" placeholder="Enter your location" required>
+            <div class="mb-4">
+                <label for="location" class="block text-gray-600 mb-2">Location</label>
+                <input type="text" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" id="location" name="location" placeholder="Enter your location" required>
             </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-600 mb-2">Email</label>
+                <input type="email" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" id="email" name="email" placeholder="Enter your email" required>
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-600 mb-2">Password</label>
+                <input type="password" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" id="password" name="password" placeholder="Enter your password" required>
             </div>
-            <div class="form-group">
-                <label for="password_confirmation">Confirm Password:</label>
-                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
+            <div class="mb-6">
+                <label for="password_confirmation" class="block text-gray-600 mb-2">Confirm Password</label>
+                <input type="password" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" id="password_confirmation" name="password_confirmation" placeholder="Confirm your password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600">Register</button>
         </form>
     </div>
 </body>

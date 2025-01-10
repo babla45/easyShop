@@ -43,8 +43,8 @@ Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('pr
 // Add this route temporarily for testing
 Route::get('/test-mail', function () {
     $order = \App\Models\Order::first();
-    
-    \Mail::to('your-email@example.com')->send(new \App\Mail\OrderConfirmation($order));
-    
+
+    \Mail::to('babla@gmail.com')->send(new \App\Mail\OrderConfirmation($order));
+
     return 'Test email sent!';
 });
