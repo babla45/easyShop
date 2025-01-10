@@ -30,32 +30,59 @@
 <!-- Products Display with Flex Wrap Enabled -->
 <div class="flex flex-wrap mt-4 justify-left align-center gap-4">
     @foreach($products as $product)
-        <div class="border border-blue-300 shadow-lg p-4 rounded-lg flex-wrap flex-shrink-0">
+        <div class="border border-blue-300 shadow-lg p-4 rounded-lg w-72">
             <!-- Image Display -->
             @if($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image" class="w-full h-32 object-cover mb-2">
+                <img src="{{ asset('storage/' . $product->image) }}" 
+                     alt="{{ $product->product_name }}" 
+                     class="w-full h-48 object-cover mb-4 rounded">
             @else
-                <div class="w-full h-32 bg-gray-200 mb-2 flex items-center justify-center text-gray-500">
+                <div class="w-full h-48 bg-gray-200 mb-4 flex items-center justify-center text-gray-500 rounded">
                     No Image
                 </div>
             @endif
 
-            <h2 class="text-xl font-bold mb-2">{{ $product->product_name }}</h2>
-            <p class="mb-1">Category: <strong>{{ $product->category }}</strong></p>
-            <p class="mb-1">Price: <strong>${{ $product->price }}</strong></p>
-            <p class="mb-1">Location: <strong>{{ $product->location }}</strong></p>
+            <!-- Product Info -->
+            <div class="mb-4">
+                <h2 class="text-xl font-bold mb-2">{{ $product->product_name }}</h2>
+                <p class="mb-2">Category: <span class="font-semibold">{{ $product->category }}</span></p>
+                <p class="mb-2">Price: <span class="font-semibold text-green-600">${{ number_format($product->price, 2) }}</span></p>
+                <p class="mb-2">Location: <span class="font-semibold">{{ $product->location }}</span></p>
+            </div>
 
-            <!-- Edit and Delete Buttons -->
-            <div class="flex justify-between mt-2">
-                <a href="/products/{{ $product->product_id }}/edit" class="text-blue-500">Edit</a>
-                <a href="login" class="text-blue-500">Buy</a>
-                {{-- <button  class="text-blue-500">Buy</button> --}}
-
-                <form action="/products/{{ $product->product_id }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="text-red-500">Delete</button>
-                </form>
+            <!-- Action Buttons -->
+            <div class="flex flex-col gap-2 mt-auto">
+                @auth
+                    <div class="flex gap-2">
+                        <form action="{{ route('cart.add', $product->id) }}" method="POST" class="flex-1">
+                            @csrf
+                            <button type="submit" 
+                                    class="w-full bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
+                                Add to Cart
+                            </button>
+                        </form>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="{{ route('products.edit', $product->id) }}" 
+                           class="flex-1 bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded text-center">
+                            Edit
+                        </a>
+                        <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="flex-1">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" 
+                                    class="w-full bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded"
+                                    onclick="return confirm('Are you sure you want to delete this product?')">
+                                Remove
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" 
+                       class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded text-center">
+                        Login to Buy
+                    </a>
+                @endauth
             </div>
         </div>
     @endforeach

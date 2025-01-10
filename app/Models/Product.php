@@ -18,12 +18,9 @@ class Product extends Model
         'image',
     ];
 
-    // Specify the primary key column
-    protected $primaryKey = 'product_id';
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 
-    // Disable auto-incrementing if necessary (if `product_id` is not auto-incrementing)
-    public $incrementing = false;
-
-    // Specify the primary key data type
-    protected $keyType = 'int';
 }

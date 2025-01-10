@@ -2,19 +2,35 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
 
 class User extends Authenticatable
 {
     use Notifiable;
 
-    // Explicitly specify the table name
-    protected $table = 'user';
+    protected $table = 'users';
 
-    // Define the fillable attributes
-    protected $fillable = ['name', 'phone', 'location', 'email', 'password'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'location',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
 }

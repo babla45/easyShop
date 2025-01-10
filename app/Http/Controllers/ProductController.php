@@ -1,16 +1,39 @@
 <?php
+
+
 // app/Http/Controllers/ProductController.php
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
 
 class ProductController extends Controller
 {
+    public function orderProduct($id)
+    {
+        // Check if the user is authenticated
+        if (!Auth::check()) {
+            // Redirect to the login page if not logged in
+            return redirect()->route('login', ['redirect_to' => route('order.product', $id)]);
+        }
+
+        // Fetch the product by ID
+        $product = Product::findOrFail($id);
+
+        // Return the view with product details
+        return view('order.product', compact('product'));
+    }
     public function index()
     {
         $products = Product::paginate(50);
         return view('products.index', compact('products'));
+    }
+
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('products.show', compact('product'));
     }
 
     public function create()
@@ -106,4 +129,6 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
+
 }
+// app/Http/Controllers/ProductController.php
