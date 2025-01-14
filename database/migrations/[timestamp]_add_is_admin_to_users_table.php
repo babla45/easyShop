@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -19,6 +20,11 @@ return new class extends Migration
                 $table->string('location')->nullable();
             }
         });
+
+        // Set the user with email 'admin@gmail.com' as admin
+        DB::table('users')
+            ->where('email', 'admin@gmail.com')
+            ->update(['is_admin' => true]);
     }
 
     public function down(): void
@@ -27,4 +33,4 @@ return new class extends Migration
             $table->dropColumn(['is_admin', 'phone', 'location']);
         });
     }
-}; 
+};
