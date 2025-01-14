@@ -5,12 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign In</title>
-<<<<<<< HEAD
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-=======
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
->>>>>>> 3a17cbb106bf060e85dc82b047fb35459081a18d
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
   <div class="bg-white p-8 rounded-lg shadow-lg w-96">
@@ -24,7 +20,6 @@
         </ul>
       </div>
     @endif
-<<<<<<< HEAD
 
     <!-- Add this alert for admins -->
     <div class="admin-alert">
@@ -33,8 +28,6 @@
         <a href="{{ route('admin.loginForm') }}" class="admin-link">Admin Login</a> instead.
     </div>
 
-=======
->>>>>>> 3a17cbb106bf060e85dc82b047fb35459081a18d
     <form action="{{ route('login.submit') }}" method="POST">
       @csrf
       <div class="mb-4">
@@ -51,7 +44,6 @@
       </div>
       <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600">Login</button>
     </form>
-<<<<<<< HEAD
 
     <div class="admin-login-link">
         <a href="{{ route('admin.loginForm') }}" class="admin-button">
@@ -123,9 +115,5 @@
         text-decoration: underline;
     }
   </style>
-=======
-    <p class="mt-4 text-gray-600">Don't have an account? <a href="register" class="text-blue-500 hover:underline">Create Account</a></p>
-  </div>
->>>>>>> 3a17cbb106bf060e85dc82b047fb35459081a18d
 </body>
 </html>
