@@ -40,15 +40,6 @@ Route::middleware(['auth', \App\Http\Middleware\PreventAdminAccess::class])->gro
     Route::get('/orders/{order}/success', [OrderController::class, 'success'])->name('orders.success');
 });
 
-// Product Management Routes (for admin only)
-Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
-});
-
 // Admin Routes
 Route::prefix('admin')
     ->middleware(['auth', \App\Http\Middleware\AdminMiddleware::class])
@@ -71,77 +62,9 @@ Route::prefix('admin')
             ->name('admin.orders.track');
     });
 
-// Move these routes inside the admin group above
-Route::delete('/admin/products/{id}', [ProductController::class, 'destroy'])
-    ->middleware(['auth', 'admin'])
-    ->name('products.destroy');
-
-// Public product routes
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-
-// Add this route temporarily for testing
+// Test routes (remove in production)
 Route::get('/test-mail', function () {
     $order = \App\Models\Order::first();
-    
-    \Mail::to('your-email@example.com')->send(new \App\Mail\OrderConfirmation($order));
-    
+    \Mail::to('babla@gmail.com')->send(new \App\Mail\OrderConfirmation($order));
     return 'Test email sent!';
 });
-
-// Add this route temporarily (REMOVE IN PRODUCTION!)
-Route::get('/make-admin', function() {
-    $user = \App\Models\User::where('email', 'your@email.com')->first();
-    if ($user) {
-        $user->update(['is_admin' => true]);
-        return "User {$user->name} is now an admin!";
-    }
-    return "User not found!";
-});
-
-// Add this temporary route at the end of the file
-Route::get('/make-admin/{email}', function($email) {
-    $user = \App\Models\User::where('email', $email)->first();
-    if ($user) {
-        $user->update(['is_admin' => true]);
-        return "User {$user->name} is now an admin!";
-    }
-    return "User not found!";
-});
-
-// Add this temporarily and remove after testing
-Route::get('/check-admin', function() {
-    if (auth()->check()) {
-        dd([
-            'user_id' => auth()->id(),
-            'is_admin' => auth()->user()->is_admin,
-            'user_data' => auth()->user()->toArray()
-        ]);
-    }
-    return 'Not logged in';
-});
-
-// Add this temporarily (REMOVE IN PRODUCTION!)
-Route::get('/make-me-admin', function() {
-    if (auth()->check()) {
-        $user = auth()->user();
-        $user->is_admin = true;
-        $user->save();
-        return "You are now an admin! Your admin status is: " . ($user->is_admin ? 'true' : 'false');
-    }
-    return "Please login first";
-});
-
-// Add this temporary route (REMOVE IN PRODUCTION!)
-Route::get('/setup-admin', function() {
-    $user = \App\Models\User::where('email', 'admin@gmail.com')->first();
-    if ($user) {
-        $user->is_admin = true;
-        $user->save();
-        return "Admin user setup complete! Admin status is: " . ($user->is_admin ? 'true' : 'false');
-    }
-    return "Admin user not found!";
-});
-
-// Admin Authentication Routes
-Route::get('/admin/login', [App\Http\Controllers\Admin\AuthController::class, 'showLoginForm'])->name('admin.loginForm');
-Route::post('/admin/login', [App\Http\Controllers\Admin\AuthController::class, 'login'])->name('admin.login');
