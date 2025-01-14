@@ -16,7 +16,7 @@ Route::middleware([\App\Http\Middleware\PreventAdminAccess::class])->group(funct
     Route::get('/', [ProductController::class, 'index'])->name('index');
     Route::get('/search', [ProductController::class, 'search'])->name('search');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-    
+
     // Authentication routes
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
@@ -25,7 +25,10 @@ Route::middleware([\App\Http\Middleware\PreventAdminAccess::class])->group(funct
 });
 
 // Add this route outside of any middleware group since it needs to be accessible by all users
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
 
 // Protected user routes (not for admins)
 Route::middleware(['auth', \App\Http\Middleware\PreventAdminAccess::class])->group(function () {
@@ -47,17 +50,17 @@ Route::prefix('admin')
         Route::get('/login', [App\Http\Controllers\Admin\AuthController::class, 'showLoginForm'])
             ->name('admin.loginForm')
             ->withoutMiddleware(['auth', \App\Http\Middleware\AdminMiddleware::class]);
-        
+
         Route::post('/login', [App\Http\Controllers\Admin\AuthController::class, 'login'])
             ->name('admin.login')
             ->withoutMiddleware(['auth', \App\Http\Middleware\AdminMiddleware::class]);
-        
+
         Route::get('/', [App\Http\Controllers\Admin\AdminController::class, 'dashboard'])
             ->name('admin.dashboard');
-        
+
         Route::resource('products', App\Http\Controllers\Admin\ProductController::class)
             ->names('admin.products');
-        
+
         Route::get('/orders/track', [App\Http\Controllers\Admin\OrderTrackingController::class, 'index'])
             ->name('admin.orders.track');
     });
