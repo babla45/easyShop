@@ -9,14 +9,13 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $table = 'users';
-
     protected $fillable = [
         'name',
         'email',
         'password',
+        'is_admin',
         'phone',
-        'location',
+        'location'
     ];
 
     protected $hidden = [
@@ -26,11 +25,11 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'is_admin' => 'boolean',
     ];
 
-    public function carts()
+    public function isAdmin(): bool
     {
-        return $this->hasMany(Cart::class);
+        return (bool) $this->is_admin;
     }
 }

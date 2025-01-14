@@ -4,44 +4,46 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class AuthController extends Controller
 {
-    // Show the login form
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // Handle the login process
     public function login(Request $request)
     {
-        // Validate the login credentials
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required|min:6',
+            'password' => 'required'
         ]);
 
-        // Attempt to authenticate the user
-        if (Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ], $request->remember)) {
-            // Redirect to dashboard or home page
-            return redirect()->route('index');
+        // First check if this is an admin account
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+        
+        if ($user && $user->isAdmin()) {
+            return redirect()->route('admin.loginForm')
+                ->with('error', 'Please use the admin login page for administrator accounts.');
         }
 
-        // If login fails, redirect back with an error message
-        return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
     public function logout(Request $request)
     {
         Auth::logout();
+        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        
+        return redirect()->route('index')->with('success', 'You have been logged out successfully');
     }
 }

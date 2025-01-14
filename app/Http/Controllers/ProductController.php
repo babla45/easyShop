@@ -38,11 +38,21 @@ class ProductController extends Controller
 
     public function create()
     {
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            return redirect()->route('index')
+                ->with('error', 'Access denied. Only administrators can add products.');
+        }
+
         return view('products.create');
     }
 
     public function store(Request $request)
     {
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            return redirect()->route('index')
+                ->with('error', 'Access denied. Only administrators can add products.');
+        }
+
         $request->validate([
             'product_name' => 'required',
             'category' => 'required',
@@ -66,32 +76,48 @@ class ProductController extends Controller
 
     public function edit($id)
     {
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            return redirect()->route('index')
+                ->with('error', 'Access denied. Only administrators can edit products.');
+        }
         $product = Product::findOrFail($id);
         return view('products.edit', compact('product'));
     }
 
     public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
-        $imagePath = $product->image;
-
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            return redirect()->route('index')
+                ->with('error', 'Access denied. Only administrators can update products.');
         }
+
+        $product = Product::findOrFail($id);
+        
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'location' => 'required|string|max:255',
+        ]);
 
         $product->update([
             'product_name' => $request->product_name,
             'category' => $request->category,
             'price' => $request->price,
             'location' => $request->location,
-            'image' => $imagePath,
         ]);
 
-        return redirect('/')->with('success', 'Product updated successfully.');
+        // Redirect to home page with success message
+        return redirect()->route('index')
+            ->with('success', 'Product updated successfully');
     }
 
     public function destroy($id)
     {
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            return redirect()->route('index')
+                ->with('error', 'Access denied. Only administrators can delete products.');
+        }
         $product = Product::findOrFail($id);
         $product->delete();
         return redirect('/')->with('success', 'Product deleted successfully.');
