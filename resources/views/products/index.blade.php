@@ -29,7 +29,7 @@
     <!-- Products Display -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($products as $product)
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden product-card">
                 @if($product->image)
                     <img src="{{ asset('storage/' . $product->image) }}"
                          alt="{{ $product->product_name }}"
@@ -39,25 +39,25 @@
                         <span class="text-gray-500">No Image</span>
                     </div>
                 @endif
-
+                
                 <div class="p-4">
-                    <h2 class="text-xl font-bold mb-2">{{ $product->product_name }}</h2>
-                    <p class="text-gray-600 mb-2">Category: {{ $product->category }}</p>
-                    <p class="text-green-600 font-bold mb-2">${{ number_format($product->price, 2) }}</p>
-                    <p class="text-gray-600 mb-4">Location: {{ $product->location }}</p>
-
-                    <div class="flex flex-col gap-2">
+                    <h3 class="text-xl font-semibold mb-2">{{ $product->product_name }}</h3>
+                    <div class="text-gray-600 mb-2">Category: {{ $product->category }}</div>
+                    <div class="text-gray-600 mb-2">Location: {{ $product->location }}</div>
+                    <div class="text-xl font-bold text-blue-600 mb-4">${{ number_format($product->price, 2) }}</div>
+                    
+                    <div class="flex gap-2">
                         @auth
                             @if(!auth()->user()->isAdmin())
-                                <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="w-full">
                                     @csrf
-                                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-200">
                                         Add to Cart
                                     </button>
                                 </form>
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="w-full bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded text-center">
+                            <a href="{{ route('login') }}" class="w-full bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded text-center transition duration-200">
                                 Login to Buy
                             </a>
                         @endauth

@@ -10,6 +10,7 @@ use App\Http\Controllers\SMSController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\OrderTrackingController;
+use Illuminate\Support\Facades\Mail;
 
 // Public routes
 Route::middleware([\App\Http\Middleware\PreventAdminAccess::class])->group(function () {
@@ -27,8 +28,10 @@ Route::middleware([\App\Http\Middleware\PreventAdminAccess::class])->group(funct
 // Add this route outside of any middleware group since it needs to be accessible by all users
 Route::post('/logout', function () {
     Auth::logout();
-    return redirect('/login');
-})->name('logout');
+    session()->invalidate();
+    session()->regenerateToken();
+    return redirect()->route('index')->with('success', 'You have been logged out successfully');
+})->name('logout')->middleware('auth');
 
 // Protected user routes (not for admins)
 Route::middleware(['auth', \App\Http\Middleware\PreventAdminAccess::class])->group(function () {
@@ -70,4 +73,29 @@ Route::get('/test-mail', function () {
     $order = \App\Models\Order::first();
     \Mail::to('babla@gmail.com')->send(new \App\Mail\OrderConfirmation($order));
     return 'Test email sent!';
+});
+
+// Test email route (remove in production)
+Route::get('/test-email', function () {
+    try {
+        $user = \App\Models\User::first();
+        
+        if (!$user) {
+            return 'Error: No user found in database';
+        }
+
+        \Log::info('Attempting to send email to: ' . $user->email);
+        
+        Mail::to($user->email)->send(new \App\Mail\WelcomeMail($user));
+        
+        if (Mail::failures()) {
+            return 'Error sending email. Check logs for details.';
+        }
+        
+        return 'Email sent successfully to: ' . $user->email;
+        
+    } catch (\Exception $e) {
+        \Log::error('Email error: ' . $e->getMessage());
+        return 'Error: ' . $e->getMessage() . ' (Check logs for more details)';
+    }
 });

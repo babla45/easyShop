@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmation;
 
 class OrderController extends Controller
 {
@@ -59,9 +61,16 @@ class OrderController extends Controller
         // Clear cart
         Cart::where('user_id', auth()->id())->delete();
 
+        // Send order confirmation email
+        try {
+            Mail::to($request->email)->send(new OrderConfirmation($order));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send order confirmation email: ' . $e->getMessage());
+        }
+
         // Redirect to success page
         return redirect()->route('orders.success', $order)
-            ->with('success', 'Order placed successfully!');
+            ->with('success', 'Order placed successfully! Check your email for confirmation.');
     }
 
     public function success(Order $order)
