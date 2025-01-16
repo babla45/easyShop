@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\OrderTrackingController;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\PaymentController;
 
 // Public routes
 Route::middleware([\App\Http\Middleware\PreventAdminAccess::class])->group(function () {
@@ -35,15 +36,18 @@ Route::post('/logout', function () {
 
 // Protected user routes (not for admins)
 Route::middleware(['auth', \App\Http\Middleware\PreventAdminAccess::class])->group(function () {
+    // Cart Routes
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
     Route::post('/cart/{cartItem}/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.update-quantity');
     Route::delete('/cart/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
 
-    // Order Routes
+    // Payment & Order Routes
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
     Route::post('/orders', [OrderController::class, 'place'])->name('orders.place');
     Route::get('/orders/{order}/success', [OrderController::class, 'success'])->name('orders.success');
+    Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+    Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->name('payment.confirm');
 });
 
 // Admin Routes

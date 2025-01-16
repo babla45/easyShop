@@ -16,6 +16,7 @@
                             <th>Location</th>
                             <th>Date</th>
                             <th>Status</th>
+                            <th>Payment</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,8 +38,15 @@
                             <td>{{ $order->delivery_location }}</td>
                             <td>{{ $order->created_at->format('M d, Y H:i') }}</td>
                             <td>
-                                <span class="badge bg-{{ $order->status_color }}">
-                                    {{ $order->status }}
+                                <span class="badge bg-{{ $order->status === 'pending' ? 'warning' : 
+                                    ($order->status === 'processing' ? 'info' : 
+                                    ($order->status === 'completed' ? 'success' : 'danger')) }}">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ $order->payment_method === 'cod' ? 'secondary' : 'primary' }}">
+                                    {{ $order->payment_method === 'cod' ? 'Cash on Delivery' : 'Card' }}
                                 </span>
                             </td>
                         </tr>
@@ -67,6 +75,23 @@
 .table-hover tbody tr:hover {
     background-color: rgba(0,0,0,.02);
     cursor: pointer;
+}
+
+/* Hide pagination arrows */
+.pagination svg {
+    display: none;
+}
+
+/* Style pagination numbers */
+.pagination span {
+    padding: 8px 12px;
+    margin: 0 4px;
+    border-radius: 4px;
+}
+
+.pagination .active {
+    background-color: #007bff;
+    color: white;
 }
 </style>
 @endsection 

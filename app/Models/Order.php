@@ -12,7 +12,8 @@ class Order extends Model
         'user_id',
         'delivery_location',
         'status',
-        'total_amount'
+        'total_amount',
+        'payment_status'
     ];
 
     public function user(): BelongsTo
