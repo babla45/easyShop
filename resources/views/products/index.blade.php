@@ -39,13 +39,13 @@
                         <span class="text-gray-500">No Image</span>
                     </div>
                 @endif
-                
+
                 <div class="p-4">
                     <h3 class="text-xl font-semibold mb-2">{{ $product->product_name }}</h3>
                     <div class="text-gray-600 mb-2">Category: {{ $product->category }}</div>
                     <div class="text-gray-600 mb-2">Location: {{ $product->location }}</div>
                     <div class="text-xl font-bold text-blue-600 mb-4">${{ number_format($product->price, 2) }}</div>
-                    
+
                     <div class="flex gap-2">
                         @auth
                             @if(!auth()->user()->isAdmin())
@@ -57,9 +57,9 @@
                                 </form>
                             @endif
                         @else
-                            <a href="{{ route('login') }}" class="w-full bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded text-center transition duration-200">
+                            {{-- <a href="{{ route('login') }}" class="w-full bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded text-center transition duration-200">
                                 Login to Buy
-                            </a>
+                            </a> --}}
                         @endauth
                     </div>
                 </div>
