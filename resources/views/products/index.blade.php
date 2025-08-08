@@ -27,14 +27,14 @@
     </form>
 
     <!-- Products Display -->
-    <div class="products-container">
+    <div class="products-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         @foreach($products as $product)
             <div class="bg-white rounded-lg shadow-lg overflow-hidden product-card">
-                <div class="w-full h-48 bg-white flex items-center justify-center p-2">
+                <div class="w-full h-48 bg-gray-100 flex items-center justify-center p-4">
                     @if($product->image)
                         <img src="{{ asset('storage/' . $product->image) }}"
                              alt="{{ $product->product_name }}"
-                             class="max-w-full max-h-full object-contain">
+                             class="w-full h-full object-contain">
                     @else
                         <div class="w-full h-full bg-gray-200 flex items-center justify-center">
                             <span class="text-gray-500">No Image</span>
@@ -90,35 +90,6 @@
         color: white;
     }
 
-    /* Force grid layout since Tailwind might not be loaded */
-    .products-container {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
-        gap: 1.5rem !important;
-        width: 100% !important;
-    }
 
-    @media (min-width: 640px) {
-        .products-container {
-            grid-template-columns: repeat(2, 1fr) !important;
-        }
-    }
-
-    @media (min-width: 768px) {
-        .products-container {
-            grid-template-columns: repeat(3, 1fr) !important;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .products-container {
-            grid-template-columns: repeat(4, 1fr) !important;
-        }
-    }
-
-    .product-card {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
 </style>
 @endsection
