@@ -14,9 +14,9 @@
                         <!-- Product Image -->
                         <div class="w-full md:w-1/4">
                             @if($item->product->image)
-                                <img src="{{ asset('storage/' . $item->product->image) }}" 
+                                <img src="{{ asset('storage/' . $item->product->image) }}"
                                      alt="{{ $item->product->product_name }}"
-                                     class="w-full h-48 object-cover rounded">
+                                     class="w-full h-42 object-cover rounded">
                             @else
                                 <div class="w-full h-48 bg-gray-200 rounded flex items-center justify-center">
                                     <span class="text-gray-500">No Image</span>
@@ -26,7 +26,7 @@
                             <!-- Quantity Controls and Remove Button -->
                             <div class="flex justify-between items-center mt-4">
                                 <div class="flex items-center gap-2">
-                                    <button type="button" 
+                                    <button type="button"
                                             onclick="updateQuantity({{ $item->id }}, 'decrement')"
                                             class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2 rounded">
                                         -
@@ -43,7 +43,7 @@
                                 <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" 
+                                    <button type="submit"
                                             class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">
                                         Remove
                                     </button>
@@ -72,7 +72,7 @@
                         ${{ number_format($total, 2) }}
                     </span>
                 </div>
-                <a href="{{ route('orders.checkout') }}" 
+                <a href="{{ route('orders.checkout') }}"
                    class="block w-full bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded text-center">
                     Proceed to Checkout
                 </a>
@@ -101,14 +101,14 @@ function updateQuantity(cartItemId, action) {
             window.location.href = data.redirect;
             return;
         }
-        
+
         // Update quantity display
         document.querySelector(`#quantity-${cartItemId}`).textContent = data.quantity;
-        
+
         // Update item total price
-        document.querySelector(`#price-${cartItemId}`).textContent = 
+        document.querySelector(`#price-${cartItemId}`).textContent =
             '$' + parseFloat(data.total).toLocaleString('en-US', { minimumFractionDigits: 2 });
-        
+
         // Update cart total
         updateCartTotal();
     })
@@ -120,10 +120,10 @@ function updateCartTotal() {
     const total = Array.from(prices).reduce((sum, price) => {
         return sum + parseFloat(price.textContent.replace('$', '').replace(',', ''));
     }, 0);
-    
-    document.querySelector('#cart-total').textContent = 
+
+    document.querySelector('#cart-total').textContent =
         '$' + total.toLocaleString('en-US', { minimumFractionDigits: 2 });
 }
 </script>
 @endpush
-@endsection 
+@endsection

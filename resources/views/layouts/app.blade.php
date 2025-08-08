@@ -12,27 +12,61 @@
             position: sticky;
             top: 0;
         }
+        .brand-gradient {
+            background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
-    <nav class="bg-white shadow mb-4">
-        <div class="container mx-auto px-4 py-4">
+    <nav class="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg mb-6">
+        <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
-                <a href="/" class="text-xl font-bold">EasyShop</a>
-                <div class="flex items-center gap-4">
+                <a href="/" class="text-2xl font-extrabold brand-gradient transition duration-200">
+                    EasyShop
+                </a>
+                <div class="flex items-center gap-6">
                     @auth
-                        @if(!auth()->user()->isAdmin())
-                            <a href="{{ route('cart.index') }}" class="text-blue-500">Cart</a>
-                        @else
-                            <a href="{{ route('admin.products.index') }}" class="text-blue-500">Back to Admin</a>
-                        @endif
-                        <form action="{{ route('logout') }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit" class="text-red-500">Logout</button>
-                        </form>
+                        <div class="flex items-center gap-4">
+                            <div class="text-white">
+                                <span class="text-sm text-blue-200">Welcome back,</span>
+                                <div class="font-semibold">{{ auth()->user()->name }}</div>
+                            </div>
+                            @if(!auth()->user()->isAdmin())
+                                <a href="{{ route('cart.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2 relative">
+                                    🛒 Cart
+                                    @php
+                                        $cartCount = auth()->user()->getCartCount();
+                                    @endphp
+                                    @if($cartCount > 0)
+                                        <span class="text-red-600 text-xs font-bold">
+                                            ({{ $cartCount > 99 ? '99+' : $cartCount }})
+                                        </span>
+                                    @endif
+                                </a>
+                            @else
+                                <a href="{{ route('admin.products.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2">
+                                    ⚙️ Admin Panel
+                                </a>
+                            @endif
+                            <form action="{{ route('logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-200">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
                     @else
-                        <a href="{{ route('login') }}" class="text-blue-500">Login</a>
-                        <a href="{{ route('register') }}" class="text-blue-500">Register</a>
+                        <div class="flex items-center gap-4">
+                            <a href="{{ route('login') }}" class="text-white hover:text-blue-200 transition duration-200 font-medium">
+                                Login
+                            </a>
+                            <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition duration-200 font-medium">
+                                Register
+                            </a>
+                        </div>
                     @endauth
                 </div>
             </div>
@@ -40,19 +74,53 @@
     </nav>
 
     @if(auth()->check() && auth()->user()->isAdmin())
-        <div class="bg-red-500 text-white p-4 text-center">
+        <div class="bg-gray-500 p-4 text-center">
             Logged in as Admin
         </div>
     @endif
 
     <div class="container mx-auto p-4 max-w-screen-xl">
-        @if (session('success'))
-            <div class="bg-green-200 text-green-800 p-4 mb-4 rounded">
-                {{ session('success') }}
-            </div>
-        @endif
+        <div id="flash-container" class="space-y-3">
+            @foreach (['success' => 'bg-green-50 border-green-300 text-green-800', 'error' => 'bg-red-50 border-red-300 text-red-800', 'warning' => 'bg-yellow-50 border-yellow-300 text-yellow-800', 'info' => 'bg-blue-50 border-blue-300 text-blue-800'] as $type => $classes)
+                @if(session($type))
+                    <div class="flash {{ $type }} border {{ $classes }} rounded-md px-4 py-3 flex items-start justify-between shadow-sm" role="alert">
+                        <div class="flex items-center gap-2">
+                            @if($type === 'success')
+                                <span>✅</span>
+                            @elseif($type === 'error')
+                                <span>⛔</span>
+                            @elseif($type === 'warning')
+                                <span>⚠️</span>
+                            @else
+                                <span>ℹ️</span>
+                            @endif
+                            <span>{{ session($type) }}</span>
+                        </div>
+                        <button type="button" class="flash-close text-gray-500 hover:text-gray-700 ml-4">✖</button>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+
         @yield('content')
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const flashes = document.querySelectorAll('.flash');
+            flashes.forEach(flash => {
+                const closeBtn = flash.querySelector('.flash-close');
+                const remove = () => {
+                    flash.style.transition = 'opacity 300ms ease, transform 300ms ease';
+                    flash.style.opacity = '0';
+                    flash.style.transform = 'translateY(-4px)';
+                    setTimeout(() => flash.remove(), 300);
+                };
+                if (closeBtn) closeBtn.addEventListener('click', remove);
+                setTimeout(remove, 4000); // auto hide after 4s
+            });
+        });
+    </script>
 
     @stack('scripts')
 </body>

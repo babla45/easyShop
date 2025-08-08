@@ -14,7 +14,7 @@ class CartController extends Controller
         $cartItems = Cart::where('user_id', Auth::id())
             ->with('product')
             ->get();
-            
+
         $total = $cartItems->sum(function($item) {
             return $item->product->price * $item->quantity;
         });
@@ -22,7 +22,7 @@ class CartController extends Controller
         return view('cart.index', compact('cartItems', 'total'));
     }
 
-    
+
 
     public function addToCart(Request $request, $id)
     {
@@ -31,7 +31,7 @@ class CartController extends Controller
         }
 
         $product = Product::findOrFail($id);
-        
+
         $cartItem = Cart::where('user_id', Auth::id())
             ->where('product_id', $id)
             ->first();
@@ -52,24 +52,25 @@ class CartController extends Controller
     public function updateQuantity(Request $request, $cartItemId)
     {
         $cartItem = Cart::findOrFail($cartItemId);
-        
+
         if ($request->action === 'increment') {
             $cartItem->increment('quantity');
         } else if ($request->action === 'decrement') {
-            if ($cartItem->quantity <= 1) {
-                // Delete the cart item
-                $cartItem->delete();
-                
+            // Prevent quantity from going below 1
+            if ($cartItem->quantity > 1) {
+                $cartItem->decrement('quantity');
+            } else {
+                // Return error message if trying to decrement below 1
                 return response()->json([
-                    'redirect' => '/',
-                    'message' => 'Item removed from cart'
-                ]);
+                    'error' => 'Quantity cannot be reduced below 1',
+                    'quantity' => $cartItem->quantity,
+                    'total' => $cartItem->quantity * $cartItem->product->price
+                ], 400);
             }
-            $cartItem->decrement('quantity');
         }
 
         $cartItem->refresh();
-        
+
         return response()->json([
             'quantity' => $cartItem->quantity,
             'total' => $cartItem->quantity * $cartItem->product->price
@@ -84,4 +85,4 @@ class CartController extends Controller
 
         return redirect()->back()->with('success', 'Item removed from cart!');
     }
-} 
+}

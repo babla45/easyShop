@@ -32,4 +32,14 @@ class User extends Authenticatable
     {
         return (bool) $this->is_admin;
     }
+
+    public function cart()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    public function getCartCount(): int
+    {
+        return $this->cart()->sum('quantity');
+    }
 }
