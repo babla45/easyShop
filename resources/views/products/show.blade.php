@@ -30,24 +30,24 @@
                 </div>
 
                 <!-- Pricing and Availability -->
-                <div class="space-y-3">
-                    <div class="bg-gray-100 p-3 rounded-lg">
+                <div class="space-y-4">
+                    <div class="p-3 rounded-lg">
                         <span class="text-lg font-semibold text-gray-900">Price: {{ number_format($product->price, 2) }} <span class="text-2xl font-bold">৳</span></span>
                     </div>
 
-                    <div class="bg-gray-100 p-3 rounded-lg">
+                    <div class="p-3 rounded-lg">
                         <span class="text-gray-800">Status: <span class="text-green-600 font-medium">In Stock</span></span>
                     </div>
 
-                    <div class="bg-gray-100 p-3 rounded-lg">
+                    <div class="p-3 rounded-lg">
                         <span class="text-gray-800">Product Code: <span class="font-medium">{{ $product->id }}</span></span>
                     </div>
 
-                    <div class="bg-gray-100 p-3 rounded-lg">
+                    <div class="p-3 rounded-lg">
                         <span class="text-gray-800">Category: <span class="font-medium">{{ $product->category }}</span></span>
                     </div>
 
-                    <div class="bg-gray-100 p-3 rounded-lg">
+                    <div class="p-3 rounded-lg">
                         <span class="text-gray-800">Location: <span class="font-medium">{{ $product->location }}</span></span>
                     </div>
                 </div>
@@ -82,9 +82,31 @@
             <div class="p-6">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Product Description</h2>
                 <div class="prose max-w-none">
-                    <p class="text-gray-700 leading-relaxed text-lg mb-6">
-                        This is a detailed description of the product. You can extend this field by adding a `description` column to your products table and rendering it here.
-                    </p>
+
+                <!-- Pricing and Availability -->
+                <div class="space-y-4">
+                    <div class="bg-gray-100 p-3 rounded-lg">
+                        <span class="text-gray-800">Product Code: <span class="font-medium">{{ $product->id }}</span></span>
+                    </div>
+
+                    <div class="bg-gray-100 p-3 rounded-lg">
+                        <span class="text-gray-800">Status: <span class="text-green-600 font-medium">In Stock</span></span>
+                    </div>
+
+                    <div class="bg-gray-100 p-3 rounded-lg">
+                        <span class="text-gray-800">Category: <span class="font-medium">{{ $product->category }}</span></span>
+                    </div>
+
+                    <div class="bg-gray-100 p-3 rounded-lg">
+                        <span class="text-gray-800">Location: <span class="font-medium">{{ $product->location }}</span></span>
+                    </div>
+
+                    <div class="bg-gray-100 p-3 rounded-lg">
+                        <span class="text-lg font-semibold text-gray-900">Price: {{ number_format($product->price, 2) }} <span class="text-2xl font-bold">৳</span></span>
+
+                    </div>
+                </div>
+                <br>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
