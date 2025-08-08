@@ -65,13 +65,11 @@
                 @auth
                     @if(!auth()->user()->isAdmin())
                         <div class="pt-4">
-                            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="inline-block">
-                                @csrf
-                                <button type="submit"
-                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
-                                    Add to Cart
-                                </button>
-                            </form>
+                            <button type="button"
+                                    onclick="addToCart({{ $product->id }})"
+                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                                Add to Cart
+                            </button>
                         </div>
                     @endif
                 @endauth
@@ -123,4 +121,78 @@
         </div>
     </div>
 </div>
+
+<script>
+function addToCart(productId) {
+    // Show loading state
+    const button = event.target;
+    const originalText = button.textContent;
+    button.textContent = 'Adding...';
+    button.disabled = true;
+
+    fetch(`/cart/add/${productId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(async (response) => {
+        // Try to parse JSON; if not JSON, throw error
+        const text = await response.text();
+        try { return JSON.parse(text); } catch (_) { throw new Error(text); }
+    })
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            showMessage('Product added to cart!', 'success');
+
+            // Update cart counter if it exists
+            const cartCounter = document.querySelector('.cart-counter');
+            if (cartCounter && data.cartCount > 0) {
+                cartCounter.textContent = `(${data.cartCount > 99 ? '99+' : data.cartCount})`;
+            } else if (data.cartCount > 0) {
+                // Create cart counter if it doesn't exist
+                const cartLink = document.querySelector('a[href*="cart"]');
+                if (cartLink) {
+                    const counter = document.createElement('span');
+                    counter.className = 'cart-counter';
+                    counter.textContent = `(${data.cartCount > 99 ? '99+' : data.cartCount})`;
+                    cartLink.appendChild(counter);
+                }
+            }
+        } else {
+            showMessage(data.error || 'Failed to add product to cart', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage('Failed to add product to cart', 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        button.textContent = originalText;
+        button.disabled = false;
+    });
+}
+
+function showMessage(message, type) {
+    // Create message element
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+        type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+    }`;
+    messageDiv.textContent = message;
+
+    // Add to page
+    document.body.appendChild(messageDiv);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 3000);
+}
+</script>
 @endsection

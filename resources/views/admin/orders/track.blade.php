@@ -38,14 +38,14 @@
                             <td>{{ $order->delivery_location }}</td>
                             <td>{{ $order->created_at->format('M d, Y H:i') }}</td>
                             <td>
-                                <span class="badge bg-{{ $order->status === 'pending' ? 'warning' : 
-                                    ($order->status === 'processing' ? 'info' : 
+                                <span class="badge equal-badge bg-{{ $order->status === 'pending' ? 'warning' :
+                                    ($order->status === 'processing' ? 'info' :
                                     ($order->status === 'completed' ? 'success' : 'danger')) }}">
                                     {{ ucfirst($order->status) }}
                                 </span>
                             </td>
                             <td>
-                                <span class="badge bg-{{ $order->payment_method === 'cod' ? 'secondary' : 'primary' }}">
+                                <span class="badge equal-badge bg-{{ $order->payment_method === 'cod' ? 'secondary' : 'primary' }}">
                                     {{ $order->payment_method === 'cod' ? 'Cash on Delivery' : 'Card' }}
                                 </span>
                             </td>
@@ -72,6 +72,14 @@
     font-weight: 500;
 }
 
+.equal-badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px; /* same width for status and payment */
+    white-space: nowrap;
+}
+
 .table-hover tbody tr:hover {
     background-color: rgba(0,0,0,.02);
     cursor: pointer;
@@ -94,4 +102,4 @@
     color: white;
 }
 </style>
-@endsection 
+@endsection

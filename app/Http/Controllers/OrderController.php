@@ -29,7 +29,7 @@ class OrderController extends Controller
             ]);
 
             $cartItems = Cart::where('user_id', auth()->id())->with('product')->get();
-            
+
             if ($cartItems->isEmpty()) {
                 return response()->json(['error' => 'Your cart is empty'], 400);
             }
@@ -62,9 +62,20 @@ class OrderController extends Controller
             // Send order confirmation email
             try {
                 Mail::to(auth()->user()->email)->send(new OrderConfirmation($order));
-                \Log::info('Order confirmation email sent to: ' . auth()->user()->email);
+                \Log::info('Order confirmation email sent successfully to: ' . auth()->user()->email);
             } catch (\Exception $e) {
                 \Log::error('Failed to send order confirmation email: ' . $e->getMessage());
+                \Log::error('Email configuration: MAIL_MAILER=' . env('MAIL_MAILER', 'smtp') . ', MAIL_HOST=' . env('MAIL_HOST', 'not set'));
+
+                // Try alternative email method if SMTP fails
+                try {
+                    // Use log driver as fallback for development
+                    config(['mail.default' => 'log']);
+                    Mail::to(auth()->user()->email)->send(new OrderConfirmation($order));
+                    \Log::info('Order confirmation email logged to storage/logs/laravel.log');
+                } catch (\Exception $fallbackException) {
+                    \Log::error('Fallback email method also failed: ' . $fallbackException->getMessage());
+                }
             }
 
             return response()->json([

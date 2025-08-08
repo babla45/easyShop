@@ -27,6 +27,9 @@ class CartController extends Controller
     public function addToCart(Request $request, $id)
     {
         if (!Auth::check()) {
+            if ($request->ajax()) {
+                return response()->json(['error' => 'Please login to add items to cart'], 401);
+            }
             return redirect()->route('login');
         }
 
@@ -43,6 +46,17 @@ class CartController extends Controller
                 'user_id' => Auth::id(),
                 'product_id' => $id,
                 'quantity' => 1
+            ]);
+        }
+
+        // Get updated cart count
+        $cartCount = Auth::user()->getCartCount();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added to cart!',
+                'cartCount' => $cartCount
             ]);
         }
 
@@ -71,9 +85,13 @@ class CartController extends Controller
 
         $cartItem->refresh();
 
+        // Get updated cart count
+        $cartCount = Auth::user()->getCartCount();
+
         return response()->json([
             'quantity' => $cartItem->quantity,
-            'total' => $cartItem->quantity * $cartItem->product->price
+            'total' => $cartItem->quantity * $cartItem->product->price,
+            'cartCount' => $cartCount
         ]);
     }
 
@@ -82,6 +100,17 @@ class CartController extends Controller
         Cart::where('id', $cartItemId)
             ->where('user_id', Auth::id())
             ->delete();
+
+        // Get updated cart count
+        $cartCount = Auth::user()->getCartCount();
+
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Item removed from cart!',
+                'cartCount' => $cartCount
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Item removed from cart!');
     }

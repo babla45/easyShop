@@ -64,3 +64,87 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# EasyShop - MultiVendor E-Commerce Platform
+
+A Laravel-based e-commerce platform with multi-vendor support, shopping cart functionality, and order management.
+
+## Features
+
+- User authentication and registration
+- Product management with categories
+- Shopping cart functionality
+- Order placement and tracking
+- Admin panel for product management
+- Email notifications for order confirmations
+- Payment method selection (Card/COD)
+- Search functionality
+
+## Installation
+
+1. Clone the repository
+2. Run `composer install`
+3. Copy `.env.example` to `.env` and configure your database
+4. Run `php artisan key:generate`
+5. Run `php artisan migrate`
+6. Run `php artisan db:seed`
+7. Run `npm install && npm run dev`
+
+## Email Configuration
+
+To enable email sending for order confirmations, configure your email settings in the `.env` file:
+
+### For Gmail SMTP:
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=your-email@gmail.com
+MAIL_FROM_NAME="EasyShop"
+```
+
+### For Development (Log emails to file):
+```
+MAIL_MAILER=log
+```
+
+### For Mailtrap (Testing):
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your-mailtrap-username
+MAIL_PASSWORD=your-mailtrap-password
+MAIL_ENCRYPTION=tls
+```
+
+## Usage
+
+1. Register as a user
+2. Browse products and add them to cart
+3. Proceed to checkout
+4. Complete order with delivery details
+5. Receive email confirmation
+
+## Admin Features
+
+- Add/edit/delete products
+- View all orders
+- Track order status
+- Manage product categories
+
+## Troubleshooting
+
+### Email Not Sending
+1. Check your `.env` email configuration
+2. Verify SMTP credentials
+3. Check `storage/logs/laravel.log` for email errors
+4. For development, emails are logged to `storage/logs/laravel.log` when using `MAIL_MAILER=log`
+
+### Common Issues
+- Ensure all required PHP extensions are installed
+- Check file permissions for storage and bootstrap/cache directories
+- Verify database connection settings

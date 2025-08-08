@@ -11,6 +11,9 @@
         nav {
             position: sticky;
             top: 0;
+            background: linear-gradient(to right, #6098db, #58d9e2) !important;
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
         }
         .brand-gradient {
             background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6);
@@ -18,52 +21,61 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .cart-counter {
+            color: #dc2626 !important;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+        .nav-button {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+        }
     </style>
 </head>
 <body class="bg-gray-100">
-    <nav class="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg mb-6">
-        <div class="container mx-auto px-6 py-4">
+    <nav class="shadow-lg">
+        <div class="container mx-auto px-6">
             <div class="flex justify-between items-center">
-                <a href="/" class="text-2xl font-extrabold brand-gradient transition duration-200">
+                <a href="/" class="text-2xl font-extrabold text-white transition duration-200">
                     EasyShop
                 </a>
                 <div class="flex items-center gap-6">
                     @auth
                         <div class="flex items-center gap-4">
                             <div class="text-white">
-                                <span class="text-sm text-blue-200">Welcome back,</span>
-                                <div class="font-semibold">{{ auth()->user()->name }}</div>
+                                {{-- <span class="text-sm text-blue-100">Welcome back,</span> --}}
+                                <div class="font-semibold">Welcome back, {{ auth()->user()->name }}</div>
                             </div>
                             @if(!auth()->user()->isAdmin())
-                                <a href="{{ route('cart.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2 relative">
+                                <a href="{{ route('cart.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-1 rounded-lg transition duration-200 flex items-center gap-2 relative nav-button">
                                     🛒 Cart
                                     @php
                                         $cartCount = auth()->user()->getCartCount();
                                     @endphp
                                     @if($cartCount > 0)
-                                        <span class="text-red-600 text-xs font-bold">
+                                        <span class="cart-counter">
                                             ({{ $cartCount > 99 ? '99+' : $cartCount }})
                                         </span>
                                     @endif
                                 </a>
                             @else
-                                <a href="{{ route('admin.products.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center gap-2">
+                                <a href="{{ route('admin.products.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-1 rounded-lg transition duration-200 flex items-center gap-2 nav-button">
                                     ⚙️ Admin Panel
                                 </a>
                             @endif
                             <form action="{{ route('logout') }}" method="POST" class="inline">
                                 @csrf
-                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-200">
+                                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-lg transition duration-200 nav-button">
                                     Logout
                                 </button>
                             </form>
                         </div>
                     @else
                         <div class="flex items-center gap-4">
-                            <a href="{{ route('login') }}" class="text-white hover:text-blue-200 transition duration-200 font-medium">
+                            <a href="{{ route('login') }}" class="text-white hover:text-blue-100 transition duration-200 font-medium">
                                 Login
                             </a>
-                            <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg transition duration-200 font-medium">
+                            <a href="{{ route('register') }}" class="bg-white text-blue-600 hover:bg-blue-50 px-4 py-1 rounded-lg transition duration-200 font-medium nav-button">
                                 Register
                             </a>
                         </div>

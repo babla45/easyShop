@@ -9,7 +9,7 @@
     @else
         <div class="space-y-6">
             @foreach($cartItems as $item)
-                <div class="border border-gray-200 rounded-lg shadow-sm p-4">
+                <div class="border border-gray-200 rounded-lg shadow-sm p-4" id="cart-item-{{ $item->id }}">
                     <div class="flex flex-col md:flex-row gap-4">
                         <!-- Product Image -->
                         <div class="w-full md:w-1/4">
@@ -40,14 +40,11 @@
                                         +
                                     </button>
                                 </div>
-                                <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">
-                                        Remove
-                                    </button>
-                                </form>
+                                <button type="button"
+                                        onclick="removeFromCart({{ $item->id }})"
+                                        class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">
+                                    Remove
+                                </button>
                             </div>
                         </div>
 
@@ -90,11 +87,15 @@ function updateQuantity(cartItemId, action) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({ action: action })
     })
-    .then(response => response.json())
+    .then(async (response) => {
+        const text = await response.text();
+        try { return JSON.parse(text); } catch (_) { throw new Error(text); }
+    })
     .then(data => {
         if (data.redirect) {
             // Redirect to home page if quantity was 1 and decreased
@@ -111,6 +112,9 @@ function updateQuantity(cartItemId, action) {
 
         // Update cart total
         updateCartTotal();
+
+        // Update cart counter in navigation
+        updateCartCounter(data.cartCount);
     })
     .catch(error => console.error('Error:', error));
 }
@@ -118,11 +122,75 @@ function updateQuantity(cartItemId, action) {
 function updateCartTotal() {
     const prices = document.querySelectorAll('[id^="price-"]');
     const total = Array.from(prices).reduce((sum, price) => {
-        return sum + parseFloat(price.textContent.replace('$', '').replace(',', ''));
+        return sum + parseFloat(price.textContent.replace('$', '').replace(/,/g, ''));
     }, 0);
 
     document.querySelector('#cart-total').textContent =
         '$' + total.toLocaleString('en-US', { minimumFractionDigits: 2 });
+}
+
+function updateCartCounter(cartCount) {
+    const cartCounter = document.querySelector('.cart-counter');
+    if (cartCounter && cartCount > 0) {
+        cartCounter.textContent = `(${cartCount > 99 ? '99+' : cartCount})`;
+    } else if (cartCount > 0) {
+        // Create cart counter if it doesn't exist
+        const cartLink = document.querySelector('a[href*="cart"]');
+        if (cartLink) {
+            const counter = document.createElement('span');
+            counter.className = 'cart-counter';
+            counter.textContent = `(${cartCount > 99 ? '99+' : cartCount})`;
+            cartLink.appendChild(counter);
+        }
+    } else if (cartCount === 0) {
+        // Remove cart counter if cart is empty
+        const existing = document.querySelector('.cart-counter');
+        if (existing) existing.remove();
+    }
+}
+
+function removeFromCart(cartItemId) {
+    fetch(`/cart/${cartItemId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(async (response) => {
+        const text = await response.text();
+        try { return JSON.parse(text); } catch (_) { throw new Error(text); }
+    })
+    .then(data => {
+        if (data.success) {
+            // Remove the item from the DOM
+            const itemElement = document.querySelector(`#cart-item-${cartItemId}`);
+            if (itemElement) itemElement.remove();
+
+            // Update totals and counter
+            updateCartTotal();
+            updateCartCounter(data.cartCount);
+            // Intentionally no flash message on success
+        } else {
+            // Suppress flash message; still log for debugging
+            console.error('Failed to remove item:', data.error);
+        }
+    })
+    .catch(error => {
+        // Suppress flash message; still log for debugging
+        console.error('Error removing item from cart:', error);
+    });
+}
+
+function showMessage(message, type) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `fixed top-4 left-1/2 transform -translate-x-1/2 p-4 rounded-lg shadow-lg z-50 ${
+        type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+    }`;
+    messageDiv.textContent = message;
+    document.body.appendChild(messageDiv);
+    setTimeout(() => messageDiv.remove(), 3000);
 }
 </script>
 @endpush
