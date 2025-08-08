@@ -27,24 +27,26 @@
     </form>
 
     <!-- Products Display -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="products-container">
         @foreach($products as $product)
             <div class="bg-white rounded-lg shadow-lg overflow-hidden product-card">
-                @if($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}"
-                         alt="{{ $product->product_name }}"
-                         class="w-full h-48 object-cover">
-                @else
-                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-                        <span class="text-gray-500">No Image</span>
-                    </div>
-                @endif
+                <div class="w-full h-48 bg-white flex items-center justify-center p-2">
+                    @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}"
+                             alt="{{ $product->product_name }}"
+                             class="max-w-full max-h-full object-contain">
+                    @else
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <span class="text-gray-500">No Image</span>
+                        </div>
+                    @endif
+                </div>
 
                 <div class="p-4">
-                    <h3 class="text-xl font-semibold mb-2">{{ $product->product_name }}</h3>
-                    <div class="text-gray-600 mb-2">Category: {{ $product->category }}</div>
-                    <div class="text-gray-600 mb-2">Location: {{ $product->location }}</div>
-                    <div class="text-xl font-bold text-blue-600 mb-4">${{ number_format($product->price, 2) }}</div>
+                    <h3 class="text-lg font-semibold mb-2">{{ $product->product_name }}</h3>
+                    <div class="text-sm text-gray-600 mb-1">Category: {{ $product->category }}</div>
+                    <div class="text-sm text-gray-600 mb-1">Location: {{ $product->location }}</div>
+                    <div class="text-lg font-bold text-blue-600 mb-3">${{ number_format($product->price, 2) }}</div>
 
                     <div class="flex gap-2">
                         @auth
@@ -86,6 +88,37 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(255, 71, 87, 0.2);
         color: white;
+    }
+
+    /* Force grid layout since Tailwind might not be loaded */
+    .products-container {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+    }
+
+    @media (min-width: 640px) {
+        .products-container {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .products-container {
+            grid-template-columns: repeat(3, 1fr) !important;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .products-container {
+            grid-template-columns: repeat(4, 1fr) !important;
+        }
+    }
+
+    .product-card {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 </style>
 @endsection

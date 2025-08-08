@@ -7,8 +7,5 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function dashboard()
-    {
-        return view('admin.dashboard');
-    }
-} 
+    // Dashboard functionality moved to direct redirect to products
+}

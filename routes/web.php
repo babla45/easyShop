@@ -18,13 +18,13 @@ Route::middleware([\App\Http\Middleware\PreventAdminAccess::class])->group(funct
     Route::get('/', [ProductController::class, 'index'])->name('index');
     Route::get('/search', [ProductController::class, 'search'])->name('search');
     Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-
-    // Authentication routes
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-    Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegistrationController::class, 'register'])->name('register.user');
 });
+
+// Authentication routes
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::get('/register', [RegistrationController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegistrationController::class, 'register'])->name('register.user');
 
 // Add this route outside of any middleware group since it needs to be accessible by all users
 Route::post('/logout', function () {
@@ -62,14 +62,18 @@ Route::prefix('admin')
             ->name('admin.login')
             ->withoutMiddleware(['auth', \App\Http\Middleware\AdminMiddleware::class]);
 
-        Route::get('/', [App\Http\Controllers\Admin\AdminController::class, 'dashboard'])
-            ->name('admin.dashboard');
+        Route::get('/', function() {
+            return redirect()->route('admin.products.index');
+        })->name('admin.dashboard');
 
         Route::resource('products', App\Http\Controllers\Admin\ProductController::class)
             ->names('admin.products');
 
         Route::get('/orders/track', [App\Http\Controllers\Admin\OrderTrackingController::class, 'index'])
             ->name('admin.orders.track');
+
+        // Admin store view route
+        Route::get('/store', [ProductController::class, 'index'])->name('admin.store.view');
     });
 
 // Test routes (remove in production)
@@ -83,21 +87,21 @@ Route::get('/test-mail', function () {
 Route::get('/test-email', function () {
     try {
         $user = \App\Models\User::first();
-        
+
         if (!$user) {
             return 'Error: No user found in database';
         }
 
         \Log::info('Attempting to send email to: ' . $user->email);
-        
+
         Mail::to($user->email)->send(new \App\Mail\WelcomeMail($user));
-        
+
         if (Mail::failures()) {
             return 'Error sending email. Check logs for details.';
         }
-        
+
         return 'Email sent successfully to: ' . $user->email;
-        
+
     } catch (\Exception $e) {
         \Log::error('Email error: ' . $e->getMessage());
         return 'Error: ' . $e->getMessage() . ' (Check logs for more details)';

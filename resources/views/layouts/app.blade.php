@@ -23,6 +23,8 @@
                     @auth
                         @if(!auth()->user()->isAdmin())
                             <a href="{{ route('cart.index') }}" class="text-blue-500">Cart</a>
+                        @else
+                            <a href="{{ route('admin.products.index') }}" class="text-blue-500">Back to Admin</a>
                         @endif
                         <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf

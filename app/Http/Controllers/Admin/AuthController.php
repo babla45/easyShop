@@ -22,7 +22,7 @@ class AuthController extends Controller
 
         if (auth()->attempt($credentials)) {
             if (auth()->user()->isAdmin()) {
-                return redirect()->route('admin.dashboard');
+                return redirect()->route('admin.products.index');
             }
             auth()->logout();
             return back()->withErrors([
@@ -38,11 +38,11 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect()->route('index')
             ->with('success', 'Admin logged out successfully');
     }
-} 
+}
