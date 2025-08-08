@@ -60,7 +60,7 @@
                                 </a>
                             @else
                                 <a href="{{ route('admin.products.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-1 rounded-lg transition duration-200 flex items-center gap-2 nav-button">
-                                    ⚙️ Admin Panel
+                                    ⬅️ Back to Admin
                                 </a>
                             @endif
                             <form action="{{ route('logout') }}" method="POST" class="inline">

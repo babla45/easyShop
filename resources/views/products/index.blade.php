@@ -36,7 +36,11 @@
                     <h3 class="text-lg font-semibold mb-2 text-center">{{ $product->product_name }}</h3>
                     <div class="text-sm text-gray-600 mb-1 text-center">Category: {{ $product->category }}</div>
                     <div class="text-sm text-gray-600 mb-1 text-center">Location: {{ $product->location }}</div>
-                    <div class="text-lg font-bold text-blue-600 mb-3 text-center">${{ number_format($product->price, 2) }}</div>
+                    <div class="text-lg font-bold text-blue-600 mb-3 text-center">
+                        {{ number_format($product->price, 2) }}
+                        <span class="text-2xl align-middle">৳</span>
+                      </div>
+
 
                     <div class="mt-2 text-center">
                         <a href="{{ route('products.show', $product->id) }}" class="inline-block text-blue-600 hover:text-blue-800 font-medium">

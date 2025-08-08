@@ -13,12 +13,10 @@ use App\Http\Controllers\Admin\OrderTrackingController;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\PaymentController;
 
-// Public routes
-Route::middleware([\App\Http\Middleware\PreventAdminAccess::class])->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('index');
-    Route::get('/search', [ProductController::class, 'search'])->name('search');
-    Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-});
+// Public routes (allow both guests and admins to view storefront)
+Route::get('/', [ProductController::class, 'index'])->name('index');
+Route::get('/search', [ProductController::class, 'search'])->name('search');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
